@@ -1,0 +1,2096 @@
+<html lang="pl"><head><style>
+:root {
+    --fib-nav-sidebar-width: 270px;
+    --fib-nav-sidebar-bg-start: #0a1628;
+    --fib-nav-sidebar-bg-end: #050d1a;
+    --fib-nav-text-color: #a8a8b3;
+    --fib-nav-text-hover-color: #ffffff;
+    --fib-nav-icon-color: #6c757d;
+    --fib-nav-item-hover-bg: #0f2040;
+    --fib-nav-item-active-bg: #1a4a8a;
+    --fib-nav-border-color: #0d2040;
+    --fib-nav-primary-accent-color: #1a4a8a;
+    --fib-nav-primary-accent-hover-color: #2060b0;
+    --fib-nav-border-radius-sm: 8px;
+    --fib-nav-border-radius-md: 12px;
+    --fib-nav-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --fib-nav-shadow-color: rgba(0,0,0,0.25);
+    --fib-nav-shadow-light-color: rgba(0,0,0,0.15);
+    --fib-nav-user-panel-text-color: var(--fib-nav-text-hover-color);
+    --fib-nav-user-panel-bg-color-sup: #0f2040;
+    --fib-nav-user-panel-bg-color: #0a1628;
+    --fib-nav-user-panel-bg-active-color: #050d1a;
+    --fib-nav-user-panel-online-status: #00da00;
+    --fib-nav-user-panel-idle-status: #ff9800;
+    --fib-nav-user-panel-font-size: 16px;
+    --fib-nav-user-panel-btn-transition: background-color 0.1s ease-out;
+    --fib-nav-popup-bg: #0a1628;
+    --fib-nav-popup-header-border: #1a3a6a;
+    --fib-nav-popup-text-color: #e0e0e0;
+    --fib-nav-popup-list-item-bg: #0f1e35;
+    --fib-nav-popup-list-item-border: #1a3a6a;
+    --fib-nav-glow-color: rgba(26, 74, 138, 0.3);
+}
+#fib-nav-particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    background-color: transparent;
+}
+body { background-color: #050d1a; color: #fff; margin-top: 10px; }
+.content { margin-left: 270px; padding: 20px; transition: margin-left 0.3s ease-in-out; }
+@keyframes fib-nav-pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes fib-nav-active-status { 0% { background-color: var(--fib-nav-user-panel-online-status); } 50% { background-color: #50fa50; } 100% { background-color: var(--fib-nav-user-panel-online-status); } }
+@keyframes fib-nav-idle-status-anim { 0% { background-color: var(--fib-nav-user-panel-idle-status); } 50% { background-color: #ffb74d; } 100% { background-color: var(--fib-nav-user-panel-idle-status); } }
+@keyframes fibLogoPulseAndFloat { 0%, 100% { transform: translateY(0) scale(1); opacity: 1; } 50% { transform: translateY(-4px) scale(1.03); opacity: 0.95; } }
+.fib-nav-sidebar-toggle-btn-fixed { position: fixed; top: 15px; left: 15px; z-index: 1002; background-color: var(--fib-nav-sidebar-bg-end); color: var(--fib-nav-text-hover-color); border: 1px solid var(--fib-nav-border-color); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px var(--fib-nav-shadow-color); transition: background-color 0.2s ease, transform 0.3s ease-in-out, left 0.3s ease-in-out; }
+.fib-nav-sidebar-toggle-btn-fixed:hover { background-color: var(--fib-nav-primary-accent-color); }
+.fib-nav-sidebar-toggle-btn-fixed .bi { font-size: 14px; }
+.fib-nav-sidebar:not(.fib-nav-hidden) + .fib-nav-sidebar-toggle-btn-fixed { left: calc(var(--fib-nav-sidebar-width) + 15px); }
+.fib-nav-sidebar { background: linear-gradient(180deg, var(--fib-nav-sidebar-bg-start) 0%, var(--fib-nav-sidebar-bg-end) 100%); position: fixed; top: 0; left: 0; height: 100vh; width: var(--fib-nav-sidebar-width); z-index: 1000; transition: transform 0.3s ease-in-out; display: flex; flex-direction: column; box-shadow: 4px 0px 15px var(--fib-nav-shadow-color), 0 0 25px -5px var(--fib-nav-glow-color); font-family: var(--fib-nav-font-family); border-top-right-radius: var(--fib-nav-border-radius-md); border-bottom-right-radius: var(--fib-nav-border-radius-md); overflow: hidden; }
+.fib-nav-sidebar.fib-nav-hidden { transform: translateX(calc(-1 * var(--fib-nav-sidebar-width))); border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.fib-nav-sidebar-header, .fib-nav-sidebar-nav, .fib-nav-sidebar-footer { position: relative; z-index: 1; }
+.fib-nav-sidebar-header { padding: 20px 20px 15px 20px; text-align: center; border-bottom: 1px solid var(--fib-nav-border-color); }
+.fib-nav-sidebar-logo { max-width: 150px; height: auto; margin-bottom: 12px; animation: fibLogoPulseAndFloat 3s ease-in-out infinite; }
+.fib-nav-status-bar, .fib-nav-online-status-bar, .fib-nav-user-status-bar { display: flex; align-items: center; justify-content: center; padding: 8px 10px; background-color: rgba(0,0,0,0.2); border-radius: var(--fib-nav-border-radius-sm); font-size: 0.8rem; color: var(--fib-nav-text-color); margin-top: 8px; }
+.fib-nav-bar-content { display: inline-flex; align-items: center; gap: 6px; }
+.fib-nav-online-status-bar { cursor: pointer; transition: background-color 0.2s ease; }
+.fib-nav-online-status-bar:hover { background-color: rgba(0,0,0,0.35); }
+.fib-nav-user-status-bar .bi, .fib-nav-online-status-bar .bi { font-size: 1em; color: var(--fib-nav-text-color); }
+.fib-nav-user-status-bar .bi { transition: color 0.3s ease; }
+.fib-nav-user-status-bar .status-text-wrapper { position: relative; display: inline-block; min-width: 80px; text-align: left; }
+.fib-nav-user-status-bar .status-text-main, .fib-nav-user-status-bar .status-text-detail { font-weight: bold; display: inline-block; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; position: absolute; left: 0; top: 50%; transform: translateY(-50%); white-space: nowrap; }
+.fib-nav-user-status-bar .status-text-detail { opacity: 0; transform: translateY(-50%) scale(0.8); }
+.fib-nav-color-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; border: 1px solid rgba(255,255,255,0.2); animation: fib-nav-pulse 2s infinite ease-in-out; }
+.fib-nav-color-indicator.zielony { background-color: #38c745; }
+.fib-nav-color-indicator.zolty { background-color: yellow; }
+.fib-nav-color-indicator.czerwony { background-color: #F44336; }
+.fib-nav-color-indicator.czarny { background-color: #757575; }
+.fib-nav-color-indicator.brak { background-color: #555; animation: none; }
+.fib-nav-animated-text-container { position: relative; height: 1.2em; min-width: 195px; text-align: center; }
+.fib-nav-animated-text-item { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); white-space: nowrap; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; display: flex; align-items: center; justify-content: center; width: 100%;}
+.fib-nav-animated-text-item .bi { margin-right: 6px; font-size: 1em;}
+#fibNavResearchCountText { opacity: 0; transform: translate(-50%, -50%) scale(0.8);}
+.fib-nav-sidebar-nav { flex-grow: 1; overflow-y: auto; padding: 15px 10px; }
+.fib-nav-sidebar-nav::-webkit-scrollbar { width: 6px; }
+.fib-nav-sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+.fib-nav-sidebar-nav::-webkit-scrollbar-thumb { background: var(--fib-nav-primary-accent-color); border-radius: 10px; }
+.fib-nav-sidebar-nav::-webkit-scrollbar-thumb:hover { background: var(--fib-nav-primary-accent-hover-color); }
+.fib-nav-sidebar-nav .fib-nav-item { margin-bottom: 2px; }
+.fib-nav-sidebar-nav .fib-nav-link { color: var(--fib-nav-text-color); display: flex; align-items: center; padding: 10px 15px; border-radius: var(--fib-nav-border-radius-sm); text-decoration: none; transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease; font-size: 0.9rem; font-weight: 500; position: relative; }
+.fib-nav-sidebar-nav .fib-nav-link:hover { background-color: var(--fib-nav-item-hover-bg); color: var(--fib-nav-text-hover-color); box-shadow: 0 2px 10px var(--fib-nav-glow-color); }
+.fib-nav-sidebar-nav .fib-nav-link:hover .bi:first-child { color: var(--fib-nav-text-hover-color); }
+.fib-nav-sidebar-nav .fib-nav-link.fib-nav-active { background-color: var(--fib-nav-item-active-bg); color: var(--fib-nav-text-hover-color); box-shadow: 0 0 12px -2px var(--fib-nav-glow-color); }
+.fib-nav-sidebar-nav .fib-nav-link.fib-nav-active::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 4px; height: 60%; background-color: var(--fib-nav-text-hover-color); border-radius: 0 2px 2px 0; }
+.fib-nav-sidebar-nav .fib-nav-link .bi:first-child { margin-right: 12px; font-size: 16px; color: var(--fib-nav-icon-color); transition: color 0.2s ease; width: 20px; text-align: center; flex-shrink: 0; }
+.fib-nav-sidebar-nav .fib-nav-submenu-arrow { margin-left: auto; transition: transform 0.2s ease; font-size: 14px; }
+.fib-nav-sidebar-nav .fib-nav-link .fib-nav-submenu-arrow.fib-nav-expanded { transform: rotate(90deg); }
+.fib-nav-sidebar-nav .fib-nav-collapse-inner, .fib-nav-sidebar-nav .fib-nav-collapse-inner-inner { background-color: rgba(0,0,0,0.15); border-radius: var(--fib-nav-border-radius-sm); margin-top: 4px; padding: 5px 0; display: none; }
+.fib-nav-sidebar-nav .fib-nav-collapse-inner .fib-nav-link, .fib-nav-sidebar-nav .fib-nav-collapse-inner-inner .fib-nav-link { padding-left: 30px; font-size: 0.85rem; font-weight: 400; }
+.fib-nav-sidebar-nav .fib-nav-collapse-inner .fib-nav-link:hover, .fib-nav-sidebar-nav .fib-nav-collapse-inner-inner .fib-nav-link:hover { background-color: rgba(255,255,255,0.05); color: var(--fib-nav-text-hover-color); }
+.fib-nav-sidebar-nav .fib-nav-collapse-inner-inner .fib-nav-link { padding-left: 45px; }
+.fib-nav-sidebar-nav .fib-nav-collapse-inner .fib-nav-link .bi:first-child, .fib-nav-sidebar-nav .fib-nav-collapse-inner-inner .fib-nav-link .bi:first-child { font-size: 15px; color: var(--fib-nav-icon-color); }
+.fib-nav-sidebar-nav .fib-nav-collapse-inner .fib-nav-link:hover .bi:first-child, .fib-nav-sidebar-nav .fib-nav-collapse-inner-inner .fib-nav-link:hover .bi:first-child { color: var(--fib-nav-text-hover-color); }
+.fib-nav-sidebar-footer { padding: 15px; border-top: 1px solid var(--fib-nav-border-color); background-color: rgba(0,0,0,0.1); }
+.fib-nav-user-panel-button { display: flex; align-items: center; font: 400 var(--fib-nav-user-panel-font-size) var(--fib-nav-font-family); box-shadow: 0 0 2px rgba(0,0,0,.05),0 1.75px 6px rgba(0,0,0,.07),0 20px 30px rgba(0,0,0,.1); background-color: var(--fib-nav-user-panel-bg-color); border-radius: var(--fib-nav-border-radius-md); cursor: pointer; padding: 10px 12px; width: 100%; height: auto; border: 0; overflow: hidden; position: relative; transition: var(--fib-nav-user-panel-btn-transition); }
+.fib-nav-user-panel-button:active { background-color: var(--fib-nav-user-panel-bg-active-color); transform: scale(0.99); }
+.fib-nav-avatar-content { width: 36px; height: 36px; margin-right: 12px; position: relative; flex-shrink: 0; }
+.fib-nav-avatar-icon { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background-color: var(--fib-nav-user-panel-bg-color-sup); display: flex; align-items: center; justify-content: center; }
+.fib-nav-avatar-image { width: 100%; height: 100%; object-fit: cover; }
+.fib-nav-avatar-icon .bi { font-size: calc(100% - 8px); color: var(--fib-nav-text-hover-color); }
+.fib-nav-status-dot { position: absolute; width: 9px; height: 9px; right: 0px; bottom: 0px; border-radius: 50%; outline: solid 2px var(--fib-nav-user-panel-bg-color); background-color: var(--fib-nav-user-panel-online-status); animation: fib-nav-active-status 2s ease-in-out infinite; transition: background-color 0.3s ease-in-out; }
+.fib-nav-status-dot.idle { background-color: var(--fib-nav-user-panel-idle-status); animation: fib-nav-idle-status-anim 2s ease-in-out infinite; }
+.fib-nav-user-details { display: flex; align-items: center; text-align: left; color: var(--fib-nav-user-panel-text-color); overflow: hidden; flex-grow: 1; }
+.fib-nav-username { font-weight: 600; font-size: 0.95em; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 160px; }
+.fib-nav-logout-menu { background-color: var(--fib-nav-sidebar-bg-end); border: 1px solid var(--fib-nav-border-color); border-radius: var(--fib-nav-border-radius-md); box-shadow: 0 8px 20px rgba(0,0,0,0.3); padding: 8px 0; margin-top: 8px; display: none; }
+.fib-nav-logout-menu a { display: flex; align-items: center; padding: 10px 15px; color: var(--fib-nav-text-color); text-decoration: none; font-size: 0.85rem; transition: background-color 0.2s ease, color 0.2s ease; }
+.fib-nav-logout-menu a .bi { font-size: 1em; margin-right: 10px; vertical-align: middle; }
+.fib-nav-logout-menu a:hover { background-color: var(--fib-nav-primary-accent-color); color: var(--fib-nav-text-hover-color); }
+.fib-nav-bl-count-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; background-color: #ff5722; color: #fff; border-radius: var(--fib-nav-border-radius-sm); font-size: 0.75rem; font-weight: bold; padding: 0 5px; line-height: 1; margin-left: 8px; }
+.fib-nav-color-text.zielony { color: #38c745; font-weight: bold; }
+.fib-nav-color-text.zolty { color: yellow; font-weight: bold; }
+.fib-nav-color-text.czerwony { color: #F44336; font-weight: bold; }
+.fib-nav-color-text.czarny { color: #9e9e9e; font-weight: bold; }
+.fib-nav-color-text.brak { color: #777; font-weight: normal; }
+.fib-nav-online-popup-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1040; align-items: center; justify-content: center; }
+.fib-nav-online-popup-overlay.fib-nav-show { display: flex; }
+.fib-nav-online-popup-content { background-color: var(--fib-nav-popup-bg); color: var(--fib-nav-popup-text-color); border: 1px solid var(--fib-nav-border-color); border-radius: var(--fib-nav-border-radius-md); padding: 20px; width: 90%; max-width: 400px; box-shadow: 0 5px 15px var(--fib-nav-shadow-color); display: flex; flex-direction: column; }
+.fib-nav-online-popup-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--fib-nav-popup-header-border); padding-bottom: 10px; margin-bottom: 15px; }
+.fib-nav-online-popup-title { font-size: 1.2rem; font-weight: 500; margin: 0; }
+.fib-nav-online-popup-close-btn { background: none; border: none; color: var(--fib-nav-popup-text-color); font-size: 1.5rem; cursor: pointer; padding: 0 5px; line-height: 1; }
+.fib-nav-online-popup-close-btn:hover { color: var(--fib-nav-text-hover-color); }
+.fib-nav-online-popup-body { max-height: 300px; overflow-y: auto; margin-bottom: 15px; }
+.fib-nav-online-popup-body::-webkit-scrollbar { width: 5px; }
+.fib-nav-online-popup-body::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+.fib-nav-online-popup-body::-webkit-scrollbar-thumb { background: var(--fib-nav-primary-accent-color); border-radius: 10px; }
+.fib-nav-online-users-list-popup { list-style: none; padding: 0; margin: 0; }
+.fib-nav-online-user-item-popup { padding: 8px 10px; font-size: 0.9rem; background-color: var(--fib-nav-popup-list-item-bg); border: 1px solid var(--fib-nav-popup-list-item-border); border-radius: var(--fib-nav-border-radius-sm); margin-bottom: 5px; }
+.fib-nav-online-user-item-popup:last-child { margin-bottom: 0; }
+.fib-nav-online-user-item-popup.fib-nav-no-users { font-style: italic; background-color: transparent; border: none; text-align: center; }
+.fib-nav-online-user-item-popup.fib-nav-error { color: #e53935; font-weight: bold; background-color: transparent; border: none; text-align: center; }
+.fib-nav-online-popup-footer { text-align: right; border-top: 1px solid var(--fib-nav-popup-header-border); padding-top: 10px; margin-top: 5px; }
+.fib-nav-online-popup-footer-close-btn { background-color: var(--fib-nav-primary-accent-color); color: var(--fib-nav-text-hover-color); border: none; padding: 8px 15px; border-radius: var(--fib-nav-border-radius-sm); cursor: pointer; font-size: 0.9rem; }
+.fib-nav-online-popup-footer-close-btn:hover { background-color: var(--fib-nav-primary-accent-hover-color); }
+@media (max-width: 768px) { .fib-nav-sidebar:not(.fib-nav-hidden) + .fib-nav-sidebar-toggle-btn-fixed { left: 10px; } .fib-nav-sidebar-toggle-btn-fixed { top: 10px; left: 10px; } .fib-nav-sidebar { border-top-right-radius: 0; border-bottom-right-radius: 0; } .fib-nav-online-popup-content { width: 95%; } .content { margin-left: 0; } }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+
+<style>:root{--swal2-outline: 0 0 0 3px rgba(100, 150, 200, 0.5);--swal2-container-padding: 0.625em;--swal2-backdrop: rgba(0, 0, 0, 0.4);--swal2-backdrop-transition: background-color 0.15s;--swal2-width: 32em;--swal2-padding: 0 0 1.25em;--swal2-border: none;--swal2-border-radius: 0.3125rem;--swal2-background: white;--swal2-color: #545454;--swal2-show-animation: swal2-show 0.3s;--swal2-hide-animation: swal2-hide 0.15s forwards;--swal2-icon-zoom: 1;--swal2-title-padding: 0.8em 1em 0;--swal2-html-container-padding: 1em 1.6em 0.3em;--swal2-input-border: 1px solid #d9d9d9;--swal2-input-border-radius: 0.1875em;--swal2-input-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px transparent;--swal2-input-background: transparent;--swal2-input-transition: border-color 0.2s, box-shadow 0.2s;--swal2-input-hover-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px transparent;--swal2-input-focus-border: 1px solid #b4dbed;--swal2-input-focus-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px rgba(100, 150, 200, 0.5);--swal2-progress-step-background: #add8e6;--swal2-validation-message-background: #f0f0f0;--swal2-validation-message-color: #666;--swal2-footer-border-color: #eee;--swal2-footer-background: transparent;--swal2-footer-color: inherit;--swal2-timer-progress-bar-background: rgba(0, 0, 0, 0.3);--swal2-close-button-position: initial;--swal2-close-button-inset: auto;--swal2-close-button-font-size: 2.5em;--swal2-close-button-color: #ccc;--swal2-close-button-transition: color 0.2s, box-shadow 0.2s;--swal2-close-button-outline: initial;--swal2-close-button-box-shadow: inset 0 0 0 3px transparent;--swal2-close-button-focus-box-shadow: inset var(--swal2-outline);--swal2-close-button-hover-transform: none;--swal2-actions-justify-content: center;--swal2-actions-width: auto;--swal2-actions-margin: 1.25em auto 0;--swal2-actions-padding: 0;--swal2-actions-border-radius: 0;--swal2-actions-background: transparent;--swal2-action-button-transition: background-color 0.2s, box-shadow 0.2s;--swal2-action-button-hover: black 10%;--swal2-action-button-active: black 10%;--swal2-confirm-button-box-shadow: none;--swal2-confirm-button-border-radius: 0.25em;--swal2-confirm-button-background-color: #7066e0;--swal2-confirm-button-color: #fff;--swal2-deny-button-box-shadow: none;--swal2-deny-button-border-radius: 0.25em;--swal2-deny-button-background-color: #dc3741;--swal2-deny-button-color: #fff;--swal2-cancel-button-box-shadow: none;--swal2-cancel-button-border-radius: 0.25em;--swal2-cancel-button-background-color: #6e7881;--swal2-cancel-button-color: #fff;--swal2-toast-show-animation: swal2-toast-show 0.5s;--swal2-toast-hide-animation: swal2-toast-hide 0.1s forwards;--swal2-toast-border: none;--swal2-toast-box-shadow: 0 0 1px hsl(0deg 0% 0% / 0.075), 0 1px 2px hsl(0deg 0% 0% / 0.075), 1px 2px 4px hsl(0deg 0% 0% / 0.075), 1px 3px 8px hsl(0deg 0% 0% / 0.075), 2px 4px 16px hsl(0deg 0% 0% / 0.075)}[data-swal2-theme=dark]{--swal2-dark-theme-black: #19191a;--swal2-dark-theme-white: #e1e1e1;--swal2-background: var(--swal2-dark-theme-black);--swal2-color: var(--swal2-dark-theme-white);--swal2-footer-border-color: #555;--swal2-input-background: color-mix(in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10%);--swal2-validation-message-background: color-mix( in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10% );--swal2-validation-message-color: var(--swal2-dark-theme-white);--swal2-timer-progress-bar-background: rgba(255, 255, 255, 0.7)}@media(prefers-color-scheme: dark){[data-swal2-theme=auto]{--swal2-dark-theme-black: #19191a;--swal2-dark-theme-white: #e1e1e1;--swal2-background: var(--swal2-dark-theme-black);--swal2-color: var(--swal2-dark-theme-white);--swal2-footer-border-color: #555;--swal2-input-background: color-mix(in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10%);--swal2-validation-message-background: color-mix( in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10% );--swal2-validation-message-color: var(--swal2-dark-theme-white);--swal2-timer-progress-bar-background: rgba(255, 255, 255, 0.7)}}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown){overflow:hidden}body.swal2-height-auto{height:auto !important}body.swal2-no-backdrop .swal2-container{background-color:rgba(0,0,0,0) !important;pointer-events:none}body.swal2-no-backdrop .swal2-container .swal2-popup{pointer-events:auto}body.swal2-no-backdrop .swal2-container .swal2-modal{box-shadow:0 0 10px var(--swal2-backdrop)}body.swal2-toast-shown .swal2-container{box-sizing:border-box;width:360px;max-width:100%;background-color:rgba(0,0,0,0);pointer-events:none}body.swal2-toast-shown .swal2-container.swal2-top{inset:0 auto auto 50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-top-end,body.swal2-toast-shown .swal2-container.swal2-top-right{inset:0 0 auto auto}body.swal2-toast-shown .swal2-container.swal2-top-start,body.swal2-toast-shown .swal2-container.swal2-top-left{inset:0 auto auto 0}body.swal2-toast-shown .swal2-container.swal2-center-start,body.swal2-toast-shown .swal2-container.swal2-center-left{inset:50% auto auto 0;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-center{inset:50% auto auto 50%;transform:translate(-50%, -50%)}body.swal2-toast-shown .swal2-container.swal2-center-end,body.swal2-toast-shown .swal2-container.swal2-center-right{inset:50% 0 auto auto;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-start,body.swal2-toast-shown .swal2-container.swal2-bottom-left{inset:auto auto 0 0}body.swal2-toast-shown .swal2-container.swal2-bottom{inset:auto auto 0 50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-end,body.swal2-toast-shown .swal2-container.swal2-bottom-right{inset:auto 0 0 auto}@media print{body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown){overflow-y:scroll !important}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown)>[aria-hidden=true]{display:none}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown) .swal2-container{position:static !important}}div:where(.swal2-container){display:grid;position:fixed;z-index:1060;inset:0;box-sizing:border-box;grid-template-areas:"top-start     top            top-end" "center-start  center         center-end" "bottom-start  bottom-center  bottom-end";grid-template-rows:minmax(min-content, auto) minmax(min-content, auto) minmax(min-content, auto);height:100%;padding:var(--swal2-container-padding);overflow-x:hidden;transition:var(--swal2-backdrop-transition);-webkit-overflow-scrolling:touch}div:where(.swal2-container).swal2-backdrop-show,div:where(.swal2-container).swal2-noanimation{background:var(--swal2-backdrop)}div:where(.swal2-container).swal2-backdrop-hide{background:rgba(0,0,0,0) !important}div:where(.swal2-container).swal2-top-start,div:where(.swal2-container).swal2-center-start,div:where(.swal2-container).swal2-bottom-start{grid-template-columns:minmax(0, 1fr) auto auto}div:where(.swal2-container).swal2-top,div:where(.swal2-container).swal2-center,div:where(.swal2-container).swal2-bottom{grid-template-columns:auto minmax(0, 1fr) auto}div:where(.swal2-container).swal2-top-end,div:where(.swal2-container).swal2-center-end,div:where(.swal2-container).swal2-bottom-end{grid-template-columns:auto auto minmax(0, 1fr)}div:where(.swal2-container).swal2-top-start>.swal2-popup{align-self:start}div:where(.swal2-container).swal2-top>.swal2-popup{grid-column:2;place-self:start center}div:where(.swal2-container).swal2-top-end>.swal2-popup,div:where(.swal2-container).swal2-top-right>.swal2-popup{grid-column:3;place-self:start end}div:where(.swal2-container).swal2-center-start>.swal2-popup,div:where(.swal2-container).swal2-center-left>.swal2-popup{grid-row:2;align-self:center}div:where(.swal2-container).swal2-center>.swal2-popup{grid-column:2;grid-row:2;place-self:center center}div:where(.swal2-container).swal2-center-end>.swal2-popup,div:where(.swal2-container).swal2-center-right>.swal2-popup{grid-column:3;grid-row:2;place-self:center end}div:where(.swal2-container).swal2-bottom-start>.swal2-popup,div:where(.swal2-container).swal2-bottom-left>.swal2-popup{grid-column:1;grid-row:3;align-self:end}div:where(.swal2-container).swal2-bottom>.swal2-popup{grid-column:2;grid-row:3;place-self:end center}div:where(.swal2-container).swal2-bottom-end>.swal2-popup,div:where(.swal2-container).swal2-bottom-right>.swal2-popup{grid-column:3;grid-row:3;place-self:end end}div:where(.swal2-container).swal2-grow-row>.swal2-popup,div:where(.swal2-container).swal2-grow-fullscreen>.swal2-popup{grid-column:1/4;width:100%}div:where(.swal2-container).swal2-grow-column>.swal2-popup,div:where(.swal2-container).swal2-grow-fullscreen>.swal2-popup{grid-row:1/4;align-self:stretch}div:where(.swal2-container).swal2-no-transition{transition:none !important}div:where(.swal2-container)[popover]{width:auto;border:0}div:where(.swal2-container) div:where(.swal2-popup){display:none;position:relative;box-sizing:border-box;grid-template-columns:minmax(0, 100%);width:var(--swal2-width);max-width:100%;padding:var(--swal2-padding);border:var(--swal2-border);border-radius:var(--swal2-border-radius);background:var(--swal2-background);color:var(--swal2-color);font-family:inherit;font-size:1rem}div:where(.swal2-container) div:where(.swal2-popup):focus{outline:none}div:where(.swal2-container) div:where(.swal2-popup).swal2-loading{overflow-y:hidden}div:where(.swal2-container) div:where(.swal2-popup).swal2-draggable{cursor:grab}div:where(.swal2-container) div:where(.swal2-popup).swal2-draggable div:where(.swal2-icon){cursor:grab}div:where(.swal2-container) div:where(.swal2-popup).swal2-dragging{cursor:grabbing}div:where(.swal2-container) div:where(.swal2-popup).swal2-dragging div:where(.swal2-icon){cursor:grabbing}div:where(.swal2-container) h2:where(.swal2-title){position:relative;max-width:100%;margin:0;padding:var(--swal2-title-padding);color:inherit;font-size:1.875em;font-weight:600;text-align:center;text-transform:none;overflow-wrap:break-word;cursor:initial}div:where(.swal2-container) div:where(.swal2-actions){display:flex;z-index:1;box-sizing:border-box;flex-wrap:wrap;align-items:center;justify-content:var(--swal2-actions-justify-content);width:var(--swal2-actions-width);margin:var(--swal2-actions-margin);padding:var(--swal2-actions-padding);border-radius:var(--swal2-actions-border-radius);background:var(--swal2-actions-background)}div:where(.swal2-container) div:where(.swal2-loader){display:none;align-items:center;justify-content:center;width:2.2em;height:2.2em;margin:0 1.875em;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border-width:.25em;border-style:solid;border-radius:100%;border-color:#2778c4 rgba(0,0,0,0) #2778c4 rgba(0,0,0,0)}div:where(.swal2-container) button:where(.swal2-styled){margin:.3125em;padding:.625em 1.1em;transition:var(--swal2-action-button-transition);border:none;box-shadow:0 0 0 3px rgba(0,0,0,0);font-weight:500}div:where(.swal2-container) button:where(.swal2-styled):not([disabled]){cursor:pointer}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){border-radius:var(--swal2-confirm-button-border-radius);background:initial;background-color:var(--swal2-confirm-button-background-color);box-shadow:var(--swal2-confirm-button-box-shadow);color:var(--swal2-confirm-button-color);font-size:1em}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm):hover{background-color:color-mix(in srgb, var(--swal2-confirm-button-background-color), var(--swal2-action-button-hover))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm):active{background-color:color-mix(in srgb, var(--swal2-confirm-button-background-color), var(--swal2-action-button-active))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-deny){border-radius:var(--swal2-deny-button-border-radius);background:initial;background-color:var(--swal2-deny-button-background-color);box-shadow:var(--swal2-deny-button-box-shadow);color:var(--swal2-deny-button-color);font-size:1em}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-deny):hover{background-color:color-mix(in srgb, var(--swal2-deny-button-background-color), var(--swal2-action-button-hover))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-deny):active{background-color:color-mix(in srgb, var(--swal2-deny-button-background-color), var(--swal2-action-button-active))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel){border-radius:var(--swal2-cancel-button-border-radius);background:initial;background-color:var(--swal2-cancel-button-background-color);box-shadow:var(--swal2-cancel-button-box-shadow);color:var(--swal2-cancel-button-color);font-size:1em}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel):hover{background-color:color-mix(in srgb, var(--swal2-cancel-button-background-color), var(--swal2-action-button-hover))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel):active{background-color:color-mix(in srgb, var(--swal2-cancel-button-background-color), var(--swal2-action-button-active))}div:where(.swal2-container) button:where(.swal2-styled):focus-visible{outline:none;box-shadow:var(--swal2-action-button-focus-box-shadow)}div:where(.swal2-container) button:where(.swal2-styled)[disabled]:not(.swal2-loading){opacity:.4}div:where(.swal2-container) button:where(.swal2-styled)::-moz-focus-inner{border:0}div:where(.swal2-container) div:where(.swal2-footer){margin:1em 0 0;padding:1em 1em 0;border-top:1px solid var(--swal2-footer-border-color);background:var(--swal2-footer-background);color:var(--swal2-footer-color);font-size:1em;text-align:center;cursor:initial}div:where(.swal2-container) .swal2-timer-progress-bar-container{position:absolute;right:0;bottom:0;left:0;grid-column:auto !important;overflow:hidden;border-bottom-right-radius:var(--swal2-border-radius);border-bottom-left-radius:var(--swal2-border-radius)}div:where(.swal2-container) div:where(.swal2-timer-progress-bar){width:100%;height:.25em;background:var(--swal2-timer-progress-bar-background)}div:where(.swal2-container) img:where(.swal2-image){max-width:100%;margin:2em auto 1em;cursor:initial}div:where(.swal2-container) button:where(.swal2-close){position:var(--swal2-close-button-position);inset:var(--swal2-close-button-inset);z-index:2;align-items:center;justify-content:center;width:1.2em;height:1.2em;margin-top:0;margin-right:0;margin-bottom:-1.2em;padding:0;overflow:hidden;transition:var(--swal2-close-button-transition);border:none;border-radius:var(--swal2-border-radius);outline:var(--swal2-close-button-outline);background:rgba(0,0,0,0);color:var(--swal2-close-button-color);font-family:monospace;font-size:var(--swal2-close-button-font-size);cursor:pointer;justify-self:end}div:where(.swal2-container) button:where(.swal2-close):hover{transform:var(--swal2-close-button-hover-transform);background:rgba(0,0,0,0);color:#f27474}div:where(.swal2-container) button:where(.swal2-close):focus-visible{outline:none;box-shadow:var(--swal2-close-button-focus-box-shadow)}div:where(.swal2-container) button:where(.swal2-close)::-moz-focus-inner{border:0}div:where(.swal2-container) div:where(.swal2-html-container){z-index:1;justify-content:center;margin:0;padding:var(--swal2-html-container-padding);overflow:auto;color:inherit;font-size:1.125em;font-weight:normal;line-height:normal;text-align:center;overflow-wrap:break-word;word-break:break-word;cursor:initial}div:where(.swal2-container) input:where(.swal2-input),div:where(.swal2-container) input:where(.swal2-file),div:where(.swal2-container) textarea:where(.swal2-textarea),div:where(.swal2-container) select:where(.swal2-select),div:where(.swal2-container) div:where(.swal2-radio),div:where(.swal2-container) label:where(.swal2-checkbox){margin:1em 2em 3px}div:where(.swal2-container) input:where(.swal2-input),div:where(.swal2-container) input:where(.swal2-file),div:where(.swal2-container) textarea:where(.swal2-textarea){box-sizing:border-box;width:auto;transition:var(--swal2-input-transition);border:var(--swal2-input-border);border-radius:var(--swal2-input-border-radius);background:var(--swal2-input-background);box-shadow:var(--swal2-input-box-shadow);color:inherit;font-size:1.125em}div:where(.swal2-container) input:where(.swal2-input).swal2-inputerror,div:where(.swal2-container) input:where(.swal2-file).swal2-inputerror,div:where(.swal2-container) textarea:where(.swal2-textarea).swal2-inputerror{border-color:#f27474 !important;box-shadow:0 0 2px #f27474 !important}div:where(.swal2-container) input:where(.swal2-input):hover,div:where(.swal2-container) input:where(.swal2-file):hover,div:where(.swal2-container) textarea:where(.swal2-textarea):hover{box-shadow:var(--swal2-input-hover-box-shadow)}div:where(.swal2-container) input:where(.swal2-input):focus,div:where(.swal2-container) input:where(.swal2-file):focus,div:where(.swal2-container) textarea:where(.swal2-textarea):focus{border:var(--swal2-input-focus-border);outline:none;box-shadow:var(--swal2-input-focus-box-shadow)}div:where(.swal2-container) input:where(.swal2-input)::placeholder,div:where(.swal2-container) input:where(.swal2-file)::placeholder,div:where(.swal2-container) textarea:where(.swal2-textarea)::placeholder{color:#ccc}div:where(.swal2-container) .swal2-range{margin:1em 2em 3px;background:var(--swal2-background)}div:where(.swal2-container) .swal2-range input{width:80%}div:where(.swal2-container) .swal2-range output{width:20%;color:inherit;font-weight:600;text-align:center}div:where(.swal2-container) .swal2-range input,div:where(.swal2-container) .swal2-range output{height:2.625em;padding:0;font-size:1.125em;line-height:2.625em}div:where(.swal2-container) .swal2-input{height:2.625em;padding:0 .75em}div:where(.swal2-container) .swal2-file{width:75%;margin-right:auto;margin-left:auto;background:var(--swal2-input-background);font-size:1.125em}div:where(.swal2-container) .swal2-textarea{height:6.75em;padding:.75em}div:where(.swal2-container) .swal2-select{min-width:50%;max-width:100%;padding:.375em .625em;background:var(--swal2-input-background);color:inherit;font-size:1.125em}div:where(.swal2-container) .swal2-radio,div:where(.swal2-container) .swal2-checkbox{align-items:center;justify-content:center;background:var(--swal2-background);color:inherit}div:where(.swal2-container) .swal2-radio label,div:where(.swal2-container) .swal2-checkbox label{margin:0 .6em;font-size:1.125em}div:where(.swal2-container) .swal2-radio input,div:where(.swal2-container) .swal2-checkbox input{flex-shrink:0;margin:0 .4em}div:where(.swal2-container) label:where(.swal2-input-label){display:flex;justify-content:center;margin:1em auto 0}div:where(.swal2-container) div:where(.swal2-validation-message){align-items:center;justify-content:center;margin:1em 0 0;padding:.625em;overflow:hidden;background:var(--swal2-validation-message-background);color:var(--swal2-validation-message-color);font-size:1em;font-weight:300}div:where(.swal2-container) div:where(.swal2-validation-message)::before{content:"!";display:inline-block;width:1.5em;min-width:1.5em;height:1.5em;margin:0 .625em;border-radius:50%;background-color:#f27474;color:#fff;font-weight:600;line-height:1.5em;text-align:center}div:where(.swal2-container) .swal2-progress-steps{flex-wrap:wrap;align-items:center;max-width:100%;margin:1.25em auto;padding:0;background:rgba(0,0,0,0);font-weight:600}div:where(.swal2-container) .swal2-progress-steps li{display:inline-block;position:relative}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step{z-index:20;flex-shrink:0;width:2em;height:2em;border-radius:2em;background:#2778c4;color:#fff;line-height:2em;text-align:center}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step{background:#2778c4}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step{background:var(--swal2-progress-step-background);color:#fff}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step-line{background:var(--swal2-progress-step-background)}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step-line{z-index:10;flex-shrink:0;width:2.5em;height:.4em;margin:0 -1px;background:#2778c4}div:where(.swal2-icon){position:relative;box-sizing:content-box;justify-content:center;width:5em;height:5em;margin:2.5em auto .6em;zoom:var(--swal2-icon-zoom);border:.25em solid rgba(0,0,0,0);border-radius:50%;border-color:#000;font-family:inherit;line-height:5em;cursor:default;user-select:none}div:where(.swal2-icon) .swal2-icon-content{display:flex;align-items:center;font-size:3.75em}div:where(.swal2-icon).swal2-error{border-color:#f27474;color:#f27474}div:where(.swal2-icon).swal2-error .swal2-x-mark{position:relative;flex-grow:1}div:where(.swal2-icon).swal2-error [class^=swal2-x-mark-line]{display:block;position:absolute;top:2.3125em;width:2.9375em;height:.3125em;border-radius:.125em;background-color:#f27474}div:where(.swal2-icon).swal2-error [class^=swal2-x-mark-line][class$=left]{left:1.0625em;transform:rotate(45deg)}div:where(.swal2-icon).swal2-error [class^=swal2-x-mark-line][class$=right]{right:1em;transform:rotate(-45deg)}div:where(.swal2-icon).swal2-error.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-error.swal2-icon-show .swal2-x-mark{animation:swal2-animate-error-x-mark .5s}div:where(.swal2-icon).swal2-warning{border-color:#f8bb86;color:#f8bb86}div:where(.swal2-icon).swal2-warning.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-warning.swal2-icon-show .swal2-icon-content{animation:swal2-animate-i-mark .5s}div:where(.swal2-icon).swal2-info{border-color:#3fc3ee;color:#3fc3ee}div:where(.swal2-icon).swal2-info.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-info.swal2-icon-show .swal2-icon-content{animation:swal2-animate-i-mark .8s}div:where(.swal2-icon).swal2-question{border-color:#87adbd;color:#87adbd}div:where(.swal2-icon).swal2-question.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-question.swal2-icon-show .swal2-icon-content{animation:swal2-animate-question-mark .8s}div:where(.swal2-icon).swal2-success{border-color:#a5dc86;color:#a5dc86}div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line]{position:absolute;width:3.75em;height:7.5em;border-radius:50%}div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line][class$=left]{top:-0.4375em;left:-2.0635em;transform:rotate(-45deg);transform-origin:3.75em 3.75em;border-radius:7.5em 0 0 7.5em}div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line][class$=right]{top:-0.6875em;left:1.875em;transform:rotate(-45deg);transform-origin:0 3.75em;border-radius:0 7.5em 7.5em 0}div:where(.swal2-icon).swal2-success .swal2-success-ring{position:absolute;z-index:2;top:-0.25em;left:-0.25em;box-sizing:content-box;width:100%;height:100%;border:.25em solid rgba(165,220,134,.3);border-radius:50%}div:where(.swal2-icon).swal2-success .swal2-success-fix{position:absolute;z-index:1;top:.5em;left:1.625em;width:.4375em;height:5.625em;transform:rotate(-45deg)}div:where(.swal2-icon).swal2-success [class^=swal2-success-line]{display:block;position:absolute;z-index:2;height:.3125em;border-radius:.125em;background-color:#a5dc86}div:where(.swal2-icon).swal2-success [class^=swal2-success-line][class$=tip]{top:2.875em;left:.8125em;width:1.5625em;transform:rotate(45deg)}div:where(.swal2-icon).swal2-success [class^=swal2-success-line][class$=long]{top:2.375em;right:.5em;width:2.9375em;transform:rotate(-45deg)}div:where(.swal2-icon).swal2-success.swal2-icon-show .swal2-success-line-tip{animation:swal2-animate-success-line-tip .75s}div:where(.swal2-icon).swal2-success.swal2-icon-show .swal2-success-line-long{animation:swal2-animate-success-line-long .75s}div:where(.swal2-icon).swal2-success.swal2-icon-show .swal2-success-circular-line-right{animation:swal2-rotate-success-circular-line 4.25s ease-in}[class^=swal2]{-webkit-tap-highlight-color:rgba(0,0,0,0)}.swal2-show{animation:var(--swal2-show-animation)}.swal2-hide{animation:var(--swal2-hide-animation)}.swal2-noanimation{transition:none}.swal2-scrollbar-measure{position:absolute;top:-9999px;width:50px;height:50px;overflow:scroll}.swal2-rtl .swal2-close{margin-right:initial;margin-left:0}.swal2-rtl .swal2-timer-progress-bar{right:0;left:auto}.swal2-toast{box-sizing:border-box;grid-column:1/4 !important;grid-row:1/4 !important;grid-template-columns:min-content auto min-content;padding:1em;overflow-y:hidden;border:var(--swal2-toast-border);background:var(--swal2-background);box-shadow:var(--swal2-toast-box-shadow);pointer-events:auto}.swal2-toast>*{grid-column:2}.swal2-toast h2:where(.swal2-title){margin:.5em 1em;padding:0;font-size:1em;text-align:initial}.swal2-toast .swal2-loading{justify-content:center}.swal2-toast input:where(.swal2-input){height:2em;margin:.5em;font-size:1em}.swal2-toast .swal2-validation-message{font-size:1em}.swal2-toast div:where(.swal2-footer){margin:.5em 0 0;padding:.5em 0 0;font-size:.8em}.swal2-toast button:where(.swal2-close){grid-column:3/3;grid-row:1/99;align-self:center;width:.8em;height:.8em;margin:0;font-size:2em}.swal2-toast div:where(.swal2-html-container){margin:.5em 1em;padding:0;overflow:initial;font-size:1em;text-align:initial}.swal2-toast div:where(.swal2-html-container):empty{padding:0}.swal2-toast .swal2-loader{grid-column:1;grid-row:1/99;align-self:center;width:2em;height:2em;margin:.25em}.swal2-toast .swal2-icon{grid-column:1;grid-row:1/99;align-self:center;width:2em;min-width:2em;height:2em;margin:0 .5em 0 0}.swal2-toast .swal2-icon .swal2-icon-content{display:flex;align-items:center;font-size:1.8em;font-weight:bold}.swal2-toast .swal2-icon.swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line]{top:.875em;width:1.375em}.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:.3125em}.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:.3125em}.swal2-toast div:where(.swal2-actions){justify-content:flex-start;height:auto;margin:0;margin-top:.5em;padding:0 .5em}.swal2-toast button:where(.swal2-styled){margin:.25em .5em;padding:.4em .6em;font-size:1em}.swal2-toast .swal2-success{border-color:#a5dc86}.swal2-toast .swal2-success [class^=swal2-success-circular-line]{position:absolute;width:1.6em;height:3em;border-radius:50%}.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left]{top:-0.8em;left:-0.5em;transform:rotate(-45deg);transform-origin:2em 2em;border-radius:4em 0 0 4em}.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=right]{top:-0.25em;left:.9375em;transform-origin:0 1.5em;border-radius:0 4em 4em 0}.swal2-toast .swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-toast .swal2-success .swal2-success-fix{top:0;left:.4375em;width:.4375em;height:2.6875em}.swal2-toast .swal2-success [class^=swal2-success-line]{height:.3125em}.swal2-toast .swal2-success [class^=swal2-success-line][class$=tip]{top:1.125em;left:.1875em;width:.75em}.swal2-toast .swal2-success [class^=swal2-success-line][class$=long]{top:.9375em;right:.1875em;width:1.375em}.swal2-toast .swal2-success.swal2-icon-show .swal2-success-line-tip{animation:swal2-toast-animate-success-line-tip .75s}.swal2-toast .swal2-success.swal2-icon-show .swal2-success-line-long{animation:swal2-toast-animate-success-line-long .75s}.swal2-toast.swal2-show{animation:var(--swal2-toast-show-animation)}.swal2-toast.swal2-hide{animation:var(--swal2-toast-hide-animation)}@keyframes swal2-show{0%{transform:translate3d(0, -50px, 0) scale(0.9);opacity:0}100%{transform:translate3d(0, 0, 0) scale(1);opacity:1}}@keyframes swal2-hide{0%{transform:translate3d(0, 0, 0) scale(1);opacity:1}100%{transform:translate3d(0, -50px, 0) scale(0.9);opacity:0}}@keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-0.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.8125em;width:1.5625em}}@keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(0.4);opacity:0}50%{margin-top:1.625em;transform:scale(0.4);opacity:0}80%{margin-top:-0.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0deg);opacity:1}}@keyframes swal2-rotate-loading{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes swal2-animate-question-mark{0%{transform:rotateY(-360deg)}100%{transform:rotateY(0)}}@keyframes swal2-animate-i-mark{0%{transform:rotateZ(45deg);opacity:0}25%{transform:rotateZ(-25deg);opacity:.4}50%{transform:rotateZ(15deg);opacity:.8}75%{transform:rotateZ(-5deg);opacity:1}100%{transform:rotateX(0);opacity:1}}@keyframes swal2-toast-show{0%{transform:translateY(-0.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(0.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0deg)}}@keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-0.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}</style></head><body><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+$(document).ready(function () {
+    const FIB_HELPER_SCRIPT_BASE_PATH = '/configs';
+    const FIB_NAV_SCRIPT_PATH = '/configs/nav.php';
+    const mainContent = $('.content'); 
+
+    if ($('#fib-nav-particles-js').length) {
+        particlesJS("fib-nav-particles-js", {
+            particles: {
+                number: { value: 50, density: { enable: true, value_area: 800 } },
+                color: { value: "#6b6a6a" },
+                shape: { type: "circle" },
+                opacity: { value: 0.4, random: true, anim: { enable: true, speed: 1, opacity_min: 0, sync: false } },
+                size: { value: 2.5, random: true, anim: { enable: false } },
+                line_linked: { enable: false },
+                move: { enable: true, speed: 0.8, direction: "none", random: true, straight: false, out_mode: "out", bounce: false }
+            },
+            interactivity: { detect_on: "canvas", events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
+            retina_detect: true,
+        });
+    }
+
+    function updateContentMarginFib() {
+        if (fibNavSidebar.length && window.innerWidth > 768) {
+            let sidebarWidth = fibNavSidebar.hasClass('fib-nav-hidden') ? 0 : parseInt(fibNavSidebar.css('width'));
+            if(mainContent.length) mainContent.css('margin-left', sidebarWidth + 'px');
+        } else {
+            if(mainContent.length) mainContent.css('margin-left', '0');
+        }
+    }
+    
+    const fibNavSidebar = $('#fibNavSidebar');
+    const fibNavToggleButton = $('#fibNavToggleSidebar');
+    const fibNavToggleButtonIcon = fibNavToggleButton.find('.bi');
+    const userActivityStatusDot = $('#userActivityStatusDotFib');
+    let idleTimerFib = null;
+    const idleTimeoutFib = 2 * 60 * 1000;
+
+    const onlinePopupOverlayFib = $('#fibNavOnlinePopupOverlay');
+    const onlinePopupCloseHeaderBtnFib = $('#fibNavOnlinePopupCloseHeaderBtn');
+    const onlinePopupCloseFooterBtnFib = $('#fibNavOnlinePopupCloseFooterBtn');
+    const onlineStatusTriggerFib = $('#fibNavOnlineStatusTrigger');
+
+    let statusTextIntervalFib = null;
+    let currentStatusDataFib = {};
+
+    function updateUserActivityStatusFib(isIdle) {
+        if (userActivityStatusDot.length) {
+            if (isIdle) {
+                userActivityStatusDot.addClass('idle');
+            } else {
+                userActivityStatusDot.removeClass('idle');
+            }
+        }
+    }
+
+    function resetIdleTimerFib() {
+        clearTimeout(idleTimerFib);
+        updateUserActivityStatusFib(false);
+        idleTimerFib = setTimeout(function() {
+            updateUserActivityStatusFib(true);
+        }, idleTimeoutFib);
+    }
+
+    $(document).on('mousemove mousedown keydown', resetIdleTimerFib);
+
+    if (fibNavToggleButton.length) {
+        fibNavToggleButton.on('click', function () {
+            fibNavSidebar.toggleClass('fib-nav-hidden');
+            if (fibNavSidebar.hasClass('fib-nav-hidden')) {
+                fibNavToggleButtonIcon.removeClass('bi-x-lg').addClass('bi-list');
+            } else {
+                fibNavToggleButtonIcon.removeClass('bi-list').addClass('bi-x-lg');
+            }
+            updateContentMarginFib();
+        });
+    }
+
+    if (onlineStatusTriggerFib.length) {
+        onlineStatusTriggerFib.on('click', function() {
+            onlinePopupOverlayFib.addClass('fib-nav-show');
+            fetchAndUpdateOnlineListFib();
+        });
+    }
+
+    function closeOnlinePopupFib() {
+        if (onlinePopupOverlayFib.length) onlinePopupOverlayFib.removeClass('fib-nav-show');
+    }
+
+    if (onlinePopupCloseHeaderBtnFib.length) onlinePopupCloseHeaderBtnFib.on('click', closeOnlinePopupFib);
+    if (onlinePopupCloseFooterBtnFib.length) onlinePopupCloseFooterBtnFib.on('click', closeOnlinePopupFib);
+    if (onlinePopupOverlayFib.length) {
+        onlinePopupOverlayFib.on('click', function(event) {
+            if ($(event.target).is(onlinePopupOverlayFib)) {
+                closeOnlinePopupFib();
+            }
+        });
+    }
+    $(document).on('keydown', function(event) {
+        if (event.key === "Escape" && onlinePopupOverlayFib.length && onlinePopupOverlayFib.hasClass('fib-nav-show')) {
+            closeOnlinePopupFib();
+        }
+    });
+
+    $('.fib-nav-toggle-submenu-inner').on('click', function (e) {
+        e.preventDefault();
+        const innerSubmenu = $($(this).attr('href'));
+        const innerArrow = $(this).find('.fib-nav-submenu-arrow');
+        $('.fib-nav-collapse-inner-inner').not(innerSubmenu).slideUp(200);
+        $('.fib-nav-toggle-submenu-inner').find('.fib-nav-submenu-arrow').not(innerArrow).removeClass('fib-nav-expanded');
+        innerSubmenu.stop(true, true).slideToggle(200);
+        innerArrow.toggleClass('fib-nav-expanded');
+    });
+
+    $('.fib-nav-toggle-submenu').on('click', function (e) {
+        e.preventDefault();
+        const submenu = $($(this).attr('href'));
+        const arrow = $(this).find('.fib-nav-submenu-arrow');
+        $('.fib-nav-collapse-inner').not(submenu).slideUp(200);
+        $('.fib-nav-toggle-submenu').not($(this)).removeClass('fib-nav-active').find('.fib-nav-submenu-arrow').removeClass('fib-nav-expanded');
+        submenu.stop(true, true).slideToggle(200);
+        arrow.toggleClass('fib-nav-expanded');
+        if (arrow.hasClass('fib-nav-expanded') || (submenu.length && !submenu.is(':hidden'))) {
+             $(this).addClass('fib-nav-active');
+        } else {
+            $(this).removeClass('fib-nav-active');
+        }
+    });
+
+    $('.fib-nav-collapse-inner .fib-nav-link, .fib-nav-collapse-inner-inner .fib-nav-link').on('click', function(e) {
+        e.stopPropagation();
+         $('.fib-nav-link').removeClass('fib-nav-active');
+         $(this).addClass('fib-nav-active');
+         var parentToggle = $(this).closest('.fib-nav-collapse-inner').prev('.fib-nav-toggle-submenu');
+         if (parentToggle.length) {
+            parentToggle.addClass('fib-nav-active');
+         }
+         var grandParentToggle = $(this).closest('.fib-nav-collapse-inner-inner').closest('.fib-nav-collapse-inner').prev('.fib-nav-toggle-submenu');
+         if(grandParentToggle.length){
+            grandParentToggle.addClass('fib-nav-active');
+         }
+         var innerParentToggle = $(this).closest('.fib-nav-collapse-inner-inner').prev('.fib-nav-toggle-submenu-inner');
+         if (innerParentToggle.length) {
+            innerParentToggle.addClass('fib-nav-active');
+         }
+    });
+
+     $('.fib-nav-sidebar-nav > .nav > .fib-nav-item > .fib-nav-link:not(.fib-nav-toggle-submenu)').on('click', function() {
+        $('.fib-nav-link').removeClass('fib-nav-active');
+        $(this).addClass('fib-nav-active');
+        $('.fib-nav-collapse-inner').slideUp(200);
+        $('.fib-nav-submenu-arrow').removeClass('fib-nav-expanded');
+    });
+
+    if ($('#fibNavToggleLogoutMenu').length) {
+        $('#fibNavToggleLogoutMenu').on('click', function () {
+            const logoutMenu = $('#fibNavLogoutMenu');
+            if (logoutMenu.length) logoutMenu.stop(true, true).slideToggle(200);
+        });
+    }
+
+    function keepSessionAliveFib() {
+        $.ajax({
+            url: FIB_HELPER_SCRIPT_BASE_PATH + '/keep_alive.php',
+            method: 'POST',
+            dataType: 'json',
+            success: function(response) { if (response.status !== "session_active") window.location.reload(); },
+            error: function(jqXHR) { if (jqXHR.status === 401) window.location.reload(); }
+        });
+    }
+
+    function fetchAndUpdateStatusColorFib() {
+        $.ajax({
+            url: FIB_NAV_SCRIPT_PATH + '?action=get_color',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                if (data && data.raw_color && data.translated_color) {
+                    const indicator = $('#fibNavColorIndicator');
+                    const text = $('#fibNavColorText');
+                    if (indicator.length && text.length) {
+                        indicator.removeClass('zielony zolty czerwony czarny brak').addClass(data.raw_color);
+                        text.removeClass('zielony zolty czerwony czarny brak').addClass(data.raw_color).text(data.translated_color);
+                    }
+                }
+            }
+        });
+    }
+
+    function fetchAndUpdateUserStatusFib() {
+        $.ajax({
+            url: FIB_NAV_SCRIPT_PATH + '?action=get_status',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                if (JSON.stringify(data) === JSON.stringify(currentStatusDataFib)) { return; }
+                currentStatusDataFib = data;
+                const statusIcon = $('#fibNavStatusIcon');
+                const statusTextMain = $('#fibNavStatusTextMain');
+                const statusTextDetail = $('#fibNavStatusTextDetail');
+                statusIcon.removeClass().addClass('bi ' + data.icon).css('color', data.color);
+                statusTextMain.text(data.name).css('color', data.color);
+                statusTextDetail.css('color', data.color);
+                if (statusTextIntervalFib) { clearInterval(statusTextIntervalFib); }
+                statusTextMain.css({ 'opacity': '1', 'transform': 'translateY(-50%) scale(1)' });
+                statusTextDetail.css({ 'opacity': '0', 'transform': 'translateY(-50%) scale(0.8)' });
+                if (data.detail) {
+                    statusTextDetail.text(data.detail);
+                    statusTextIntervalFib = setInterval(function() {
+                        const isMainVisible = statusTextMain.css('opacity') == '1';
+                        if (isMainVisible) {
+                            statusTextMain.css({ 'opacity': '0', 'transform': 'translateY(-50%) scale(0.8)' });
+                            statusTextDetail.css({ 'opacity': '1', 'transform': 'translateY(-50%) scale(1)' });
+                        } else {
+                            statusTextDetail.css({ 'opacity': '0', 'transform': 'translateY(-50%) scale(0.8)' });
+                            statusTextMain.css({ 'opacity': '1', 'transform': 'translateY(-50%) scale(1)' });
+                        }
+                    }, 5000);
+                } else {
+                    statusTextDetail.text('');
+                    statusTextMain.css({ 'opacity': '1', 'transform': 'translateY(-50%) scale(1)' });
+                }
+            },
+            error: function() {
+                $('#fibNavStatusTextMain').text('Błąd');
+                $('#fibNavStatusIcon').removeClass().addClass('bi bi-exclamation-circle-fill').css('color', '#dc3545');
+            }
+        });
+    }
+
+    function fetchAndUpdateOnlineListFib() {
+        $.ajax({
+            url: FIB_HELPER_SCRIPT_BASE_PATH + '/refresh_online_list.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                const listElement = $('#fibOnlineUsersListPopup');
+                const countHeader = $('#fibNavOnlineCountText');
+                
+                if (countHeader.length) {
+                    countHeader.html('<i class="bi bi-people-fill"></i>Online: ' + (data.count !== undefined ? data.count : '?'));
+                }
+                
+                let usersHtml = '';
+                if (data.error) {
+                    usersHtml = '<li class="fib-nav-online-user-item-popup fib-nav-error">Błąd ładowania listy.</li>';
+                } else if (data.users && data.users.length > 0) {
+                    data.users.forEach(function(user) {
+                        usersHtml += '<li class="fib-nav-online-user-item-popup">' + (user.name ? user.name : 'Nieznany Agent') + '</li>';
+                    });
+                } else {
+                    usersHtml = '<li class="fib-nav-online-user-item-popup fib-nav-no-users">Obecnie żaden agent nie jest online.</li>';
+                }
+                if (listElement.length) listElement.html(usersHtml);
+            },
+            error: function() {
+                const countHeader = $('#fibNavOnlineCountText');
+                const listElement = $('#fibOnlineUsersListPopup');
+                if (countHeader.length) countHeader.html('<i class="bi bi-people-fill"></i>Online: ?');
+                if (listElement.length) listElement.html('<li class="fib-nav-online-user-item-popup fib-nav-error">Błąd połączenia.</li>');
+            }
+        });
+    }
+    
+    function fetchAndUpdateMedicCountFib() {
+        $.ajax({
+            url: '../configs/fetch_ems_research_medic_count.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                if (data && data.error === null) {
+                    $('#fibNavResearchCountText').html('<i class="bi bi-clipboard2-pulse-fill"></i>Dostępni medycy od badań: ' + data.research_medics);
+                }
+            },
+            error: function() {
+                $('#fibNavResearchCountText').html('<i class="bi bi-clipboard2-pulse-fill"></i>Dostępni medycy od badań: ?');
+            }
+        });
+    }
+
+
+    if (navigator.sendBeacon) {
+       window.addEventListener('unload', function() {
+           const uidForBeaconFib = '98884';
+           if (uidForBeaconFib) {
+                navigator.sendBeacon(FIB_HELPER_SCRIPT_BASE_PATH + '/mark_offline_on_unload.php', new URLSearchParams({uid_to_logout: uidForBeaconFib}));
+           }
+       }, false);
+    }
+
+    if ($('#fibNavToggleLogoutMenu').length > 0 && true) {
+        setInterval(keepSessionAliveFib, 300000);
+        keepSessionAliveFib();
+        setInterval(fetchAndUpdateStatusColorFib, 30000);
+        fetchAndUpdateStatusColorFib();
+        
+        setInterval(fetchAndUpdateOnlineListFib, 15000);
+        fetchAndUpdateOnlineListFib();
+        
+        setInterval(fetchAndUpdateMedicCountFib, 15000);
+        fetchAndUpdateMedicCountFib();
+
+        setInterval(fetchAndUpdateUserStatusFib, 7000);
+        fetchAndUpdateUserStatusFib();
+
+        resetIdleTimerFib();
+        
+        setInterval(function() {
+            const mainText = $('#fibNavOnlineCountText');
+            const detailText = $('#fibNavResearchCountText');
+            const isMainVisible = mainText.css('opacity') == '1';
+
+            if (isMainVisible) {
+                mainText.css({ 'opacity': '0', 'transform': 'translate(-50%, -50%) scale(0.8)' });
+                detailText.css({ 'opacity': '1', 'transform': 'translate(-50%, -50%) scale(1)' });
+            } else {
+                detailText.css({ 'opacity': '0', 'transform': 'translate(-50%, -50%) scale(0.8)' });
+                mainText.css({ 'opacity': '1', 'transform': 'translate(-50%, -50%) scale(1)' });
+            }
+        }, 15000);
+    }
+
+    if (fibNavSidebar.length && fibNavToggleButtonIcon.length) {
+        if (window.innerWidth <= 768) {
+            fibNavSidebar.addClass('fib-nav-hidden');
+            fibNavToggleButtonIcon.removeClass('bi-x-lg').addClass('bi-list');
+        } else {
+            fibNavSidebar.removeClass('fib-nav-hidden');
+            fibNavToggleButtonIcon.removeClass('bi-list').addClass('bi-x-lg');
+        }
+        updateContentMarginFib();
+    }
+
+    $(window).on('resize', function() {
+         if (fibNavSidebar.length && fibNavToggleButtonIcon.length) {
+            if (window.innerWidth <= 768) {
+                if(!fibNavSidebar.hasClass('fib-nav-hidden')) {
+                    fibNavSidebar.addClass('fib-nav-hidden');
+                    fibNavToggleButtonIcon.removeClass('bi-x-lg').addClass('bi-list');
+                }
+            }
+            updateContentMarginFib();
+        }
+    });
+});
+</script>
+
+
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LSPD — Taryfikator</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+:root {
+--bg: #050d1a;
+--surface: #0a1628;
+--surface-2: #0f1e35;
+--surface-3: #162540;
+--border: rgba(255,255,255,0.06);
+--border-hover: rgba(255,255,255,0.1);
+--accent: #1a4a8a;
+    --accent-hover: #2060b0;
+    --accent-muted: rgba(26, 74, 138, 0.15);
+    --accent-text: #ffffff;
+    --accent-bright: #e9ecef;
+
+    --text: #e0e0e0;
+    --text-dim: #a8a8b3;
+    --text-faint: #6c757d;
+
+    --t1: #7aaa5a;
+    --t2: #c8a84b;
+    --t3: #d4864a;
+    --t4: #c85a5a;
+    --t5: #a07ac8;
+
+    --sidebar-width: 260px;
+    --radius: 8px;
+    --radius-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.page-wrap {
+    padding: 56px 40px 100px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+@media (min-width: 992px) {
+    .page-wrap {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+}
+
+.page-title { text-align: center; }
+.page-tagline { text-align: center; }
+
+.page-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #f8f9fa;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+.page-title span {
+    color: var(--text-dim);
+    font-weight: 500;
+}
+.page-tagline {
+    margin-top: 6px;
+    font-size: 1rem;
+    color: var(--text-faint);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+}
+
+.header-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.search-wrap { position: relative; width: 100%; }
+.search-wrap .ico {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-faint);
+    font-size: 20px;
+    pointer-events: none;
+    transition: color .25s ease;
+}
+.search-input {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 16px 10px 40px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 1rem;
+    width: 100%;
+    outline: none;
+    transition: all .25s ease;
+}
+.search-input::placeholder { color: var(--text-faint); }
+.search-input:focus {
+    border-color: var(--accent-hover);
+    background: var(--surface);
+}
+.search-wrap:focus-within .ico { color: var(--accent-text); }
+
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .25s ease;
+}
+.btn-outline:hover {
+    border-color: var(--accent-hover);
+    color: var(--accent-text);
+    background: var(--surface-2);
+}
+.btn-outline .material-icons { font-size: 18px; }
+
+.btn-solid {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: var(--accent);
+    border: 1px solid transparent;
+    color: var(--accent-text);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .25s ease;
+}
+.btn-solid:hover { background: var(--accent-hover); }
+.btn-solid .material-icons { font-size: 18px; }
+
+.section-block {
+    margin-bottom: 40px;
+    animation: fadeUp .4s ease both;
+}
+.section-block:nth-child(2) { animation-delay: .05s; }
+.section-block:nth-child(3) { animation-delay: .1s; }
+.section-block:nth-child(4) { animation-delay: .15s; }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-left: 4px;
+}
+.section-icon { font-size: 1.1rem; opacity: 0.7; }
+.section-name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+}
+.section-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 22px;
+    padding: 0 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-faint);
+}
+
+.table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.tariff-table { width: 100%; border-collapse: collapse; }
+.tariff-table thead th {
+    background: transparent;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-faint);
+}
+.tariff-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .2s ease;
+}
+.tariff-table tbody tr:last-child { border-bottom: none; }
+.tariff-table tbody tr:hover { background: var(--surface-2); }
+.tariff-table tbody td {
+    padding: 18px 24px;
+    vertical-align: middle;
+}
+
+.td-nr { width: 120px; }
+.nr-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+    opacity: 0.85;
+}
+
+.td-opis {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.6;
+}
+.td-tier { width: 160px; text-align: center; }
+.td-actions { width: 60px; text-align: center; }
+.td-drag { width: 48px; text-align: center; }
+
+.tier-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    border: none;
+}
+.tier-i   { background: rgba(122,170,90,0.1);  color: var(--t1); }
+.tier-ii  { background: rgba(200,168,75,0.1);  color: var(--t2); }
+.tier-iii { background: rgba(212,134,74,0.1);  color: var(--t3); }
+.tier-iv  { background: rgba(200,90,90,0.1);   color: var(--t4); }
+.tier-v   { background: rgba(160,122,200,0.1); color: var(--t5); }
+.tier-def { background: var(--surface-3); color: var(--text-dim); }
+
+.drag-handle {
+    cursor: grab; color: var(--text-faint); font-size: 20px;
+    display: block; transition: color .2s ease;
+}
+.drag-handle:hover { color: var(--accent-text); }
+.drag-handle:active { cursor: grabbing; }
+.sortable-ghost { opacity: 0.25; }
+
+.form-control-edit {
+    width: 100%;
+    background: transparent;
+    color: var(--text);
+    border: none;
+    border-bottom: 1px dashed rgba(255,255,255,0.06);
+    border-radius: 0;
+    padding: 8px 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color .25s ease;
+}
+.form-control-edit:focus {
+    border-bottom-color: var(--accent-hover);
+    border-bottom-style: solid;
+}
+
+.sticky-bar {
+    position: sticky;
+    bottom: 0;
+    background: rgba(5, 13, 26, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border);
+    padding: 16px 40px;
+    margin: 32px -40px -100px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    z-index: 200;
+}
+
+.add-section-wrap {
+    margin-top: 48px;
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.add-section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.add-section-title .material-icons { font-size: 16px; color: var(--text-dim); }
+
+.form-label-sm {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    margin-bottom: 8px;
+}
+.form-control-table {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    width: 100%;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color .25s ease;
+}
+.form-control-table::placeholder { color: var(--text-faint); }
+.form-control-table:focus { border-color: var(--accent-hover); }
+
+.btn-delete-row {
+    background: transparent; border: none;
+    color: var(--text-faint); cursor: pointer;
+    padding: 6px; border-radius: 4px;
+    transition: all .2s ease;
+    display: inline-flex; align-items: center;
+}
+.btn-delete-row:hover { color: var(--t4); }
+.btn-delete-row .material-icons { font-size: 18px; }
+
+.fab {
+    position: fixed; bottom: 32px; right: 32px;
+    width: 56px; height: 56px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 1050;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    transition: all .3s ease;
+}
+.fab:hover {
+    border-color: var(--accent-hover);
+    color: var(--accent-text);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+}
+.fab .material-icons { font-size: 26px; }
+
+.modal-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+}
+.modal-header {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px 20px;
+}
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--accent-bright);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.modal-title .material-icons { font-size: 24px; color: var(--text-dim); }
+.modal-body { padding: 28px 32px; }
+.modal-footer {
+    border-top: 1px solid var(--border);
+    padding: 16px 32px;
+}
+.btn-close { filter: invert(1) grayscale(100%) brightness(200%); opacity: 0.2; }
+.btn-close:hover { opacity: 0.6; }
+
+.rules-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+}
+.rules-box p {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+.modal-sub {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    margin-bottom: 16px;
+    margin-top: 28px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+}
+.modal-sub:first-of-type { margin-top: 0; }
+
+.tier-list { display: flex; flex-direction: column; gap: 8px; }
+.tier-row {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 20px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+}
+.tier-row-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+.tier-row-label { font-size: 0.85rem; font-weight: 500; min-width: 60px; }
+.tier-row-desc { font-size: 0.95rem; color: var(--text); font-weight: 400; }
+
+.ul-list {
+    margin: 8px 0 0 0;
+    padding-left: 24px;
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+}
+.ul-list li { margin-bottom: 6px; }
+.ul-list b { color: var(--text); font-weight: 500; }
+
+.empty-state {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--text-faint);
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+.swal2-popup {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius) !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+    font-size: 1rem !important;
+}
+
+@media (max-width: 991px) {
+    .page-wrap {
+        margin-left: auto;
+        margin-right: auto;
+        padding: 32px 24px 90px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-wrap { padding: 24px 16px 80px; }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+    }
+
+    .page-title { font-size: 1.4rem; }
+    .page-tagline { font-size: 0.9rem; }
+
+    .header-controls {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .search-wrap { width: 100%; }
+    .search-input { width: 100%; }
+
+    .table-card { border-radius: var(--radius-sm); overflow-x: auto; }
+
+    .tariff-table { min-width: 640px; }
+    .tariff-table thead th { padding: 12px 14px; font-size: 0.75rem; }
+    .tariff-table tbody td { padding: 14px; }
+
+    .td-nr { width: 80px; }
+    .td-tier { width: 120px; }
+
+    .section-block { margin-bottom: 28px; }
+
+    .sticky-bar {
+        padding: 16px;
+        margin: 24px -16px -80px;
+        gap: 10px;
+    }
+
+    .add-section-wrap { padding: 24px 20px; margin-top: 36px; }
+
+    .fab {
+        width: 48px; height: 48px;
+        bottom: 20px; right: 20px;
+    }
+    .fab .material-icons { font-size: 22px; }
+}
+
+@media (max-width: 480px) {
+    .page-wrap { padding: 20px 14px 72px; }
+    .page-title { font-size: 1.2rem; }
+
+    .tariff-table { min-width: 540px; }
+
+    .btn-outline, .btn-solid {
+        font-size: 0.9rem;
+        padding: 10px 16px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .sticky-bar {
+        flex-direction: column;
+        padding: 16px;
+        margin: 20px -14px -72px;
+    }
+
+    .modal-header { padding: 20px 20px 16px; }
+    .modal-body { padding: 20px; }
+    .modal-footer { padding: 16px 20px; }
+}
+</style>
+
+
+<button type="button" class="fab" data-bs-toggle="modal" data-bs-target="#helpModal" title="Zasady Taryfikatora">
+    <i class="material-icons">info_outline</i>
+</button>
+
+<div class="page-wrap">
+    <div class="page-header">
+        <div style="text-align:center; width:100%;">
+            <h1 class="page-title">Taryfikator <span>LSPD</span></h1>
+            <p class="page-tagline">Rejestr przewinień służbowych i przypisanych kar</p>
+        </div>
+        <div class="header-controls" style="width:100%; align-items:center;">
+            <div class="search-wrap" style="max-width:400px; margin:0 auto;">
+                <i class="material-icons ico">search</i>
+                <input type="search" id="tariffSearchInput" class="search-input" placeholder="Szukaj...">
+            </div>
+            <div style="display:flex; justify-content:center; margin-top:4px;">
+                <button type="button" class="btn-outline" data-bs-toggle="modal" data-bs-target="#splataModal" style="white-space:nowrap;">
+                    <i class="material-icons" style="font-size:18px;">account_balance_wallet</i> Odpracowania / Spłaty
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST" id="taryfikatorForm">
+        
+        <div id="allSections">
+                    <div class="section-block" data-section="Dresscode">
+                <div class="section-header">
+                    <span class="section-icon">📋</span>
+                    <span class="section-name">Dresscode</span>
+                    <span class="section-pill">6</span>
+                </div>
+                <div class="table-card">
+                    <table class="tariff-table">
+                        <thead>
+                            <tr>
+                                                                <th>NR</th>
+                                <th>TREŚĆ</th>
+                                <th style="text-align:center;">KARA</th>
+                                                            </tr>
+                        </thead>
+                        <tbody class="">
+                                                    <tr data-id="2">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">A.1</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Widoczne Tatuaże / Malowania na głowie                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T3-T4</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="3">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">A.2</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Brak Odznaki, Plakietki, Widocznego napisu "FIB",bodycama                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="4">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">A.3</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Zły Dresscode                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iii">T1-T3</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="69">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">A.4</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Niepoprawny skin do kamizelki                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="70">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">A.5</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Posiadanie rogów na służbie (poza drop)                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iii">T3</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="74">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">A.6</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Plecak niedozwolony w state                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                </tbody>
+                    </table>
+                </div>
+            </div>
+                    <div class="section-block" data-section="Magazyn">
+                <div class="section-header">
+                    <span class="section-icon">📋</span>
+                    <span class="section-name">Magazyn</span>
+                    <span class="section-pill">4</span>
+                </div>
+                <div class="table-card">
+                    <table class="tariff-table">
+                        <thead>
+                            <tr>
+                                                                <th>NR</th>
+                                <th>TREŚĆ</th>
+                                <th style="text-align:center;">KARA</th>
+                                                            </tr>
+                        </thead>
+                        <tbody class="">
+                                                    <tr data-id="7">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">B.1</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Wynoszenie Magazynu                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-def">Zwolnienie Dyscyplinarne + State BL</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="8">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">B.2</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Zaśmiecanie Magazynu/pojazdu frakcyjnego                                                                     </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T1 - T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="9">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">B.3</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Brak wypisania / Źle wypisany raport wydania broni.                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T1-T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="10">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">B.4</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Pozostawienie przedmiotów frakcyjnych na ziemi na terenie frakcji.                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iii">T1-T3</span>
+                                                                    </td>
+                                                            </tr>
+                                                </tbody>
+                    </table>
+                </div>
+            </div>
+                    <div class="section-block" data-section="Pojazdy">
+                <div class="section-header">
+                    <span class="section-icon">📋</span>
+                    <span class="section-name">Pojazdy</span>
+                    <span class="section-pill">4</span>
+                </div>
+                <div class="table-card">
+                    <table class="tariff-table">
+                        <thead>
+                            <tr>
+                                                                <th>NR</th>
+                                <th>TREŚĆ</th>
+                                <th style="text-align:center;">KARA</th>
+                                                            </tr>
+                        </thead>
+                        <tbody class="">
+                                                    <tr data-id="11">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">C.1</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Porzucenie / zniszczenie pojazdu frakcyjnego                                                                     </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T1 - T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="14">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">C.2</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Parkowanie pojazdów prywatnych na terenie do tego nieprzeznaczonym                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-i">T1</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="64">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">C.3</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Korzystanie z pojazdów bez uprawnień                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T1 - T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="78">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">C.4</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Umieszczanie przedmiotów frakcyjnych w pojazdach                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-i">T1</span>
+                                                                    </td>
+                                                            </tr>
+                                                </tbody>
+                    </table>
+                </div>
+            </div>
+                    <div class="section-block" data-section="Baza Danych / Opaski GPS">
+                <div class="section-header">
+                    <span class="section-icon">📋</span>
+                    <span class="section-name">Baza Danych / Opaski GPS</span>
+                    <span class="section-pill">6</span>
+                </div>
+                <div class="table-card">
+                    <table class="tariff-table">
+                        <thead>
+                            <tr>
+                                                                <th>NR</th>
+                                <th>TREŚĆ</th>
+                                <th style="text-align:center;">KARA</th>
+                                                            </tr>
+                        </thead>
+                        <tbody class="">
+                                                    <tr data-id="17">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">D.1</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Niewłaściwe / brak wypisu opaski gps                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iii">T1 - T3</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="60">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">D.2</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Brak wypisu / aktulizacji bazy danych                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iii">T1 - T3</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="61">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">D.3</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Posiadanie nieaktualnych badań lekarskich (15/17dni - T2 | 18/20dni - T3 | 21/29dni - T4 | 30dni+ — zwolnienie z frakcji)                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T2-T4</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="63">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">D.4</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Zamyślanie się w miejscu nieprzeznaczonym                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="71">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">D.5</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Zamyślanie się na głównych schodkach do pierwszego budynku                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iii">T3</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="76">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">D.6</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Mandaty -  10 i wyżej                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T1 - T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                </tbody>
+                    </table>
+                </div>
+            </div>
+                    <div class="section-block" data-section="Niepoprawności w Aresztowaniach">
+                <div class="section-header">
+                    <span class="section-icon">📋</span>
+                    <span class="section-name">Niepoprawności w Aresztowaniach</span>
+                    <span class="section-pill">4</span>
+                </div>
+                <div class="table-card">
+                    <table class="tariff-table">
+                        <thead>
+                            <tr>
+                                                                <th>NR</th>
+                                <th>TREŚĆ</th>
+                                <th style="text-align:center;">KARA</th>
+                                                            </tr>
+                        </thead>
+                        <tbody class="">
+                                                    <tr data-id="20">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">E.1</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Niepoprawne wystawienie wyroku/kaucji/powodu                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T2 - T4 + cofnięcie do Basic</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="23">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">E.2</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Brak wypisu opaski gps w artykule                                                                     </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iii">T2 - T3</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="25">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">E.3</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Wystawienie wyroku powyżej 50 miesięcy                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-v">T5</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="26">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">E.4</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Niepoprawne nadanie poszukiwania                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                </tbody>
+                    </table>
+                </div>
+            </div>
+                    <div class="section-block" data-section="Lekkie Wykroczenia">
+                <div class="section-header">
+                    <span class="section-icon">⚠️</span>
+                    <span class="section-name">Lekkie Wykroczenia</span>
+                    <span class="section-pill">9</span>
+                </div>
+                <div class="table-card">
+                    <table class="tariff-table">
+                        <thead>
+                            <tr>
+                                                                <th>NR</th>
+                                <th>TREŚĆ</th>
+                                <th style="text-align:center;">KARA</th>
+                                                            </tr>
+                        </thead>
+                        <tbody class="">
+                                                    <tr data-id="28">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">F.1</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Niepoprawne wypisanie wiadomości DEP / MARK                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iii">T1 - T3</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="29">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">F.2</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Niepoprawne używanie Radia / Chatu Frakcyjnego                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iii">T2 - T3</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="30">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">F.3</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Poruszanie się prywatnymi pojazdami podczas służby                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T2 - T4</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="32">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">F.5</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Wyjazd pojazdem opancerzonym podczas nieodpowiedniego kodu na miasto                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iii">T3</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="68">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">F.6</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Nieobecność na RG                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T1 - T4</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="35">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">F.7</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Korzystanie z Drona / Defibrylatora bez uprawnień                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T1 - T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="36">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">F.8</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Brak reakcji na wtargnięcie obywatela na siedzibę                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T1 - T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="65">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">F.9</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Wykorzystywanie wyposażenia frakcyjnego poza służbą                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T2 - T4</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="33">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">F.10</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Negocjowanie bez zdanego szkolenia NEGO / SV                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T4</span>
+                                                                    </td>
+                                                            </tr>
+                                                </tbody>
+                    </table>
+                </div>
+            </div>
+                    <div class="section-block" data-section="Nieposiadanie Dokumentów / Posiadanie Niepoprawnego Wyposażenia">
+                <div class="section-header">
+                    <span class="section-icon">📋</span>
+                    <span class="section-name">Nieposiadanie Dokumentów / Posiadanie Niepoprawnego Wyposażenia</span>
+                    <span class="section-pill">6</span>
+                </div>
+                <div class="table-card">
+                    <table class="tariff-table">
+                        <thead>
+                            <tr>
+                                                                <th>NR</th>
+                                <th>TREŚĆ</th>
+                                <th style="text-align:center;">KARA</th>
+                                                            </tr>
+                        </thead>
+                        <tbody class="">
+                                                    <tr data-id="37">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">G.1</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Nieposiadanie legitymacji służbowej                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="38">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">G.2</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Nieposiadanie certyfikatu wojskowego                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T4 lub Zwolnienie</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="39">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">G.3</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Nieposiadanie odpowiednich licencji                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T4 lub Zwolnienie</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="41">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">G.4</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Posiadanie nielegalnych przedmiotów                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T2 - T4</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="42">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">G.5</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Posiadanie zbyt dużą ilość danego przedmiotu przy sobie (np przesadna ilość epi)                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T1 - T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="43">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">G.6</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Posiadanie broni / przedmiotu na numery innej frakcji                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-i">T1</span>
+                                                                    </td>
+                                                            </tr>
+                                                </tbody>
+                    </table>
+                </div>
+            </div>
+                    <div class="section-block" data-section="Ciężkie Wykroczenia">
+                <div class="section-header">
+                    <span class="section-icon">🚨</span>
+                    <span class="section-name">Ciężkie Wykroczenia</span>
+                    <span class="section-pill">20</span>
+                </div>
+                <div class="table-card">
+                    <table class="tariff-table">
+                        <thead>
+                            <tr>
+                                                                <th>NR</th>
+                                <th>TREŚĆ</th>
+                                <th style="text-align:center;">KARA</th>
+                                                            </tr>
+                        </thead>
+                        <tbody class="">
+                                                    <tr data-id="45">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.1</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Nieposiadanie BodyCama / kropeczki                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T2 - T4</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="46">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.2</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Nieodpowiednie zachowanie na/poza służbą                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-v">T1 - T5</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="47">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.3</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Niewykonywanie poleceń HC                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-v">T3 - T5</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="48">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.4</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Niepoprawne wykonywanie obowiązków                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-v">T2 - T5</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="49">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.5</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Obraza HC / Agentów / Cywili / Innych członków STATE                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-v">T2 - T5 / Zwolnienie Dyscyplinarne + BL</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="50">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.6</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Groźby w stronę innego pracownika State                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-v">T4 - T5  / Zwolnienie Dyscyplinarne + BL</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="51">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.7</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Strzelanie do innego funkcjonariusza Frakcji State                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-def">Zwolnienie Dyscyplinarne + BL</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="52">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.8</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Okłamywanie HC                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-v">T3 - T5/Zwolnienie Dyscyplinarne + BL</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="53">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.9</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Wykonywanie obowiązków funkcjonariusza poza służbą                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-v">T3 - T5</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="54">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.10</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Strzelanie na siedzibie                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-ii">T1 - T2</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="55">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.11</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Wyrabianie szkoleń bez uprawnień                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T4</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="67">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.12</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Celowe bicie się/zakuwanie na służbie                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T2 - T4</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="58">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.13</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Podsłuchiwanie rozmów HC                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-v">T4 - T5</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="59">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.14</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Kara nie uwzględniona w taryfikatorze                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-v">T1 - T5 / Zwolnienie Dyscyplinarne + BL</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="66">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.15</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Reprymenda dla Lidera                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T4 Zwolnienie Dyscyplinarne + BL</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="56">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.16</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Nie poddanie się kontroli CD / Ucieczka przed kontrolą CD                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T2 - T4 / Zawieszenie</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="72">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.17</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Celowo wycofanie licencji na broń bez powodu                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T3 - T4</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="73">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.18</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Wykonywanie obowiązków służbowych podczas zawieszenia                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-iv">T4 lub Zwolnienie Dyscyplinarne + BL</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="77">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.19</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Niedopełnienie obowiązków funkcjonariusza                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-v">T3-T5</span>
+                                                                    </td>
+                                                            </tr>
+                                                    <tr data-id="79">
+                                                                <td class="td-nr">
+                                                                            <span class="nr-badge">H.20</span>
+                                                                    </td>
+                                <td class="td-opis">
+                                                                            Wykazywanie chęci przyjęcia łapówki/ przyjęcie                                                                    </td>
+                                <td class="td-tier">
+                                                                            <span class="tier-badge tier-def">T.3</span>
+                                                                    </td>
+                                                            </tr>
+                                                </tbody>
+                    </table>
+                </div>
+            </div>
+                        </div>
+
+            </form>
+
+    </div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="material-icons">gavel</i> Wyjaśnienie Systemu Kar (T1-T5)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="rules-box">
+                    <p>Poniżej znajdują się objaśnienia terminów używanych w taryfikatorze kar dla funkcjonariuszy LSPD.</p>
+                </div>
+
+                <p class="modal-sub">Rodzaje warnów (Tiery)</p>
+                <div class="tier-list">
+                    <div class="tier-row">
+                        <div class="tier-row-header">
+                            <span class="tier-badge tier-def tier-row-label">Kary pieniężne</span>
+                        </div>
+                        <ul class="ul-list">
+                            <li><b>T1</b> - 100 000$</li>
+                            <li><b>T2</b> - 250 000$</li>
+                            <li><b>T3</b> - 350 000$</li>
+                            <li><b>T4</b> - 500 000$</li>
+                        </ul>
+                    </div>
+                    <div class="tier-row">
+                        <div class="tier-row-header">
+                            <span class="tier-badge tier-def tier-row-label">Rodzaje kar</span>
+                        </div>
+                        <ul class="ul-list">
+                            <li><span style="color:var(--t1); font-weight:600;">T1</span> - spłata lub odpracowanie</li>
+                            <li><span style="color:var(--t2); font-weight:600;">T2</span> - spłata lub odpracowanie</li>
+                            <li><span style="color:var(--t3); font-weight:600;">T3</span> - spłata</li>
+                            <li><span style="color:var(--t4); font-weight:600;">T4</span> - spłata</li>
+                            <li><span style="color:var(--t5); font-weight:600;">T5</span> - do wyjaśnienia z Leaderem</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p class="modal-sub">Rodzaje odpracowań</p>
+                <div class="tier-list">
+                    <div class="tier-row">
+                        <div class="tier-row-header">
+                            <span class="tier-badge tier-i tier-row-label">T1</span>
+                        </div>
+                        <ul class="ul-list">
+                            <li>30 minut patrolu na szpitalu East</li>
+                            <li>30 minut patrolu na Weazel news</li>
+                            <li>30 minut stacjonowania na bramie zachód/wschód</li>
+                            <li>Opłyń wyspę Los Santos zaczynając na Molo</li>
+                            <li>Przebiegnij całą wyspę (autostrada) zaczynając od lotniska</li>
+                        </ul>
+                    </div>
+                    <div class="tier-row">
+                        <div class="tier-row-header">
+                            <span class="tier-badge tier-ii tier-row-label">T2</span>
+                        </div>
+                        <ul class="ul-list">
+                            <li>1h patrolu na szpitalu East</li>
+                            <li>1h patrolu na Weazel news</li>
+                            <li>1h stacjonowania na bramie zachód/wschód</li>
+                            <li>Opłyń wyspę Los Santos zaczynając na Molo</li>
+                            <li>Przebiegnij całą wyspę (autostrada) zaczynając od lotniska</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p class="modal-sub">Rodzaje Kar Dyscyplinarnych</p>
+                <div class="tier-list">
+                    <div class="tier-row">
+                        <ul class="ul-list" style="margin-top:0;">
+                            <li><b>Warn:</b> Oficjalne ostrzeżenie wpisywane do akt.</li>
+                            <li><b>DEGRAD:</b> Degradacja, czyli obniżenie stopnia (rangi).</li>
+                            <li><b>BL NA STATE:</b> Natychmiastowe wydalenie z frakcji oraz wpisanie na Czarną Listę (Blacklist) frakcji porządkowych.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p class="modal-sub">Uwagi dodatkowe</p>
+                <div class="tier-list">
+                    <div class="tier-row" style="border-left: 3px solid var(--t2);">
+                        <span class="tier-row-desc">Wszelkie niejasności i odwołania należy kierować do członków High Command</span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline" data-bs-dismiss="modal">Zamknij</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Odpracowania / Spłaty -->
+<div class="modal fade" id="splataModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="material-icons">account_balance_wallet</i> Odpracowania / Spłaty</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+
+                <p class="modal-sub">Kary pieniężne</p>
+                <div class="tier-list">
+                    <div class="tier-row">
+                        <ul class="ul-list" style="margin-top:0;">
+                            <li><span style="color:var(--t1);font-weight:600;">T1</span> – 100 000$</li>
+                            <li><span style="color:var(--t2);font-weight:600;">T2</span> – 250 000$</li>
+                            <li><span style="color:var(--t3);font-weight:600;">T3</span> – 350 000$</li>
+                            <li><span style="color:var(--t4);font-weight:600;">T4</span> – 500 000$</li>
+                            <li><span style="color:var(--t5);font-weight:600;">T5</span> – 650 000$</li>
+                            <li><b>T6</b> – kara indywidualna (do decyzji Leadera)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p class="modal-sub">Rodzaje spłaty / odpracowania</p>
+                <div class="tier-list">
+                    <div class="tier-row">
+                        <ul class="ul-list" style="margin-top:0;">
+                            <li><span style="color:var(--t1);font-weight:600;">T1</span> – spłata lub odpracowanie</li>
+                            <li><span style="color:var(--t2);font-weight:600;">T2</span> – <span style="color:var(--t5);font-weight:600;">T5</span> – spłata i/lub odpracowanie</li>
+                            <li><b>T6</b> – ustalane indywidualnie</li>
+                        </ul>
+                    </div>
+                    <div class="tier-row" style="border-left:3px solid var(--t2);">
+                        <span class="tier-row-desc">👉 <b>Przy T2 – T5 można:</b></span>
+                        <ul class="ul-list">
+                            <li>spłacić <b>x1.5</b> kwoty</li>
+                            <li>lub odpracować <b>x2</b></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p class="modal-sub">Rodzaje odpracowań</p>
+                <div class="tier-list">
+                    <div class="tier-row">
+                        <div class="tier-row-header">
+                            <span class="tier-badge tier-i tier-row-label">T1</span>
+                        </div>
+                        <ul class="ul-list">
+                            <li>30 minut patrolu (np. szpital East / Weazel / brama)</li>
+                            <li>40 pompek wojskowych</li>
+                        </ul>
+                    </div>
+                    <div class="tier-row">
+                        <div class="tier-row-header">
+                            <span class="tier-badge tier-ii tier-row-label">T2</span>
+                        </div>
+                        <ul class="ul-list">
+                            <li>1 godzina patrolu</li>
+                            <li>60 pompek wojskowych</li>
+                        </ul>
+                    </div>
+                    <div class="tier-row">
+                        <div class="tier-row-header">
+                            <span class="tier-badge tier-iii tier-row-label">T3</span>
+                        </div>
+                        <ul class="ul-list">
+                            <li>2 godziny patrolu (Weazel / East)</li>
+                            <li>200 pompek wojskowych</li>
+                            <li>5 okrążeń bazy Zancudo</li>
+                            <li>1,5 godziny warty (np. SANG)</li>
+                        </ul>
+                    </div>
+                    <div class="tier-row">
+                        <div class="tier-row-header">
+                            <span class="tier-badge tier-iv tier-row-label">T4</span>
+                        </div>
+                        <ul class="ul-list">
+                            <li>Opłynięcie wyspy</li>
+                            <li>Przebiegnięcie autostrady</li>
+                            <li>Przepłynięcie na Cayo</li>
+                            <li>Czołganie w Zancudo</li>
+                            <li>5 godzin patrolu</li>
+                        </ul>
+                    </div>
+                    <div class="tier-row">
+                        <div class="tier-row-header">
+                            <span class="tier-badge tier-v tier-row-label">T5</span>
+                        </div>
+                        <ul class="ul-list">
+                            <li>2x opłynięcie wyspy</li>
+                            <li>Przebiegnięcie autostrady tam i z powrotem</li>
+                            <li>Przepłynięcie na Cayo i powrót</li>
+                            <li>3x czołganie Zancudo</li>
+                            <li>10 godzin patrolu</li>
+                            <li>500 pompek</li>
+                            <li>Wejście pieszo na Mount Chiliad</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline" data-bs-dismiss="modal">Zamknij</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById('tariffSearchInput');
+    if (!searchInput) return;
+    searchInput.addEventListener('input', function () {
+        const term = this.value.toLowerCase().trim();
+        document.querySelectorAll('.section-block').forEach(block => {
+            let visible = 0;
+            block.querySelectorAll('tbody tr[data-id]').forEach(row => {
+                const match = !term || row.textContent.toLowerCase().includes(term);
+                row.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+            block.style.display = (!term || visible > 0) ? '' : 'none';
+        });
+    });
+});
+
+</script>
+
+
+</body></html>
